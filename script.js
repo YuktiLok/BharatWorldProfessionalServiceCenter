@@ -341,3 +341,65 @@ console.log('%c Bharat World Professional Service Center ',
     'background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; font-size: 16px; padding: 10px 20px; border-radius: 5px;');
 console.log('%c Website developed with care ', 
     'color: #f97316; font-size: 12px;');
+
+// ===== Hero Carousel =====
+const carouselSlides = document.querySelectorAll('.carousel-slide');
+const indicators = document.querySelectorAll('.indicator');
+let currentSlide = 0;
+let carouselInterval;
+
+function showSlide(index) {
+    // Remove active class from all slides and indicators
+    carouselSlides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev', 'next');
+        if (i < index) slide.classList.add('prev');
+        if (i > index) slide.classList.add('next');
+    });
+    indicators.forEach(ind => ind.classList.remove('active'));
+    
+    // Add active class to current slide and indicator
+    carouselSlides[index].classList.add('active');
+    indicators[index].classList.add('active');
+    
+    currentSlide = index;
+}
+
+function nextSlide() {
+    const next = (currentSlide + 1) % carouselSlides.length;
+    showSlide(next);
+}
+
+function prevSlide() {
+    const prev = (currentSlide - 1 + carouselSlides.length) % carouselSlides.length;
+    showSlide(prev);
+}
+
+// Auto-advance carousel
+function startCarousel() {
+    carouselInterval = setInterval(nextSlide, 3500);
+}
+
+function stopCarousel() {
+    clearInterval(carouselInterval);
+}
+
+// Initialize carousel
+if (carouselSlides.length > 0) {
+    startCarousel();
+    
+    // Click on indicators
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            stopCarousel();
+            showSlide(index);
+            startCarousel();
+        });
+    });
+    
+    // Pause on hover
+    const carousel = document.querySelector('.hero-carousel');
+    if (carousel) {
+        carousel.addEventListener('mouseenter', stopCarousel);
+        carousel.addEventListener('mouseleave', startCarousel);
+    }
+}
