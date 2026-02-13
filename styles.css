@@ -679,6 +679,17 @@ ul {
     font-size: 0.95rem;
     display: block;
     word-break: break-word;
+    margin-bottom: 3px;
+}
+
+.info-item div strong a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-item div strong a:hover {
+    color: var(--secondary);
 }
 
 .working-hours {
