@@ -1,0 +1,14 @@
+# Robots.txt for Bharat World Professional Service Center
+# https://bharatworldservice.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://bharatworldservice.com/sitemap.xml
+
+# Crawl-delay (optional, for politeness)
+Crawl-delay: 10
+
+# Disallow unnecessary files
+Disallow: /assets/*.png$
