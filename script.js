@@ -5,9 +5,9 @@ const header = document.querySelector('.header');
 
 // ===== EmailJS Configuration =====
 // IMPORTANT: Replace these with your actual EmailJS credentials
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'; // Get from EmailJS dashboard
-const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID'; // Get from EmailJS dashboard
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'; // Get from EmailJS dashboard
+const EMAILJS_PUBLIC_KEY = 'yqVW82_dX_A0zAsBW'; // Get from EmailJS dashboard
+const EMAILJS_SERVICE_ID = 'service_458dc8j'; // Get from EmailJS dashboard
+const EMAILJS_TEMPLATE_ID = 'template_7ab1dc8'; // Get from EmailJS dashboard
 
 // Initialize EmailJS
 (function() {
