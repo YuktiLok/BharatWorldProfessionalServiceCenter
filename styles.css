@@ -676,7 +676,9 @@ ul {
 }
 
 .info-item div strong {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    display: block;
+    word-break: break-word;
 }
 
 .working-hours {
