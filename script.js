@@ -3,6 +3,19 @@ const enquiryForm = document.getElementById('enquiryForm');
 const successModal = document.getElementById('successModal');
 const header = document.querySelector('.header');
 
+// ===== EmailJS Configuration =====
+// IMPORTANT: Replace these with your actual EmailJS credentials
+const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'; // Get from EmailJS dashboard
+const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID'; // Get from EmailJS dashboard
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'; // Get from EmailJS dashboard
+
+// Initialize EmailJS
+(function() {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+})();
+
 // ===== Header Scroll Effect =====
 let lastScroll = 0;
 
@@ -38,7 +51,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ===== Form Validation & Submission =====
-enquiryForm.addEventListener('submit', function(e) {
+enquiryForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     // Get form values
@@ -67,34 +80,81 @@ enquiryForm.addEventListener('submit', function(e) {
         return;
     }
     
-    // Create enquiry object
-    const enquiry = {
-        name,
-        mobile,
-        email: email || 'Not provided',
-        serviceType,
-        appliance,
-        message: message || 'No additional details',
-        timestamp: new Date().toISOString()
+    // Get appliance display name
+    const applianceNames = {
+        'air-conditioner': 'Air Conditioner',
+        'washing-machine': 'Washing Machine',
+        'microwave': 'Microwave Oven'
     };
     
-    // Store in localStorage (for demo purposes)
-    saveEnquiry(enquiry);
+    // Get service type display name
+    const serviceNames = {
+        'service': 'Service',
+        'repair': 'Repair',
+        'installation': 'Installation'
+    };
     
-    // Show success modal
-    showSuccessModal();
+    // Create enquiry object for email
+    const templateParams = {
+        from_name: name,
+        from_mobile: mobile,
+        from_email: email || 'Not provided',
+        service_type: serviceNames[serviceType] || serviceType,
+        appliance_type: applianceNames[appliance] || appliance,
+        message: message || 'No additional details provided',
+        to_email: 'bharatworldprofessionalservice@gmail.com',
+        submission_date: new Date().toLocaleString('en-IN', { 
+            timeZone: 'Asia/Kolkata',
+            dateStyle: 'full',
+            timeStyle: 'short'
+        })
+    };
     
-    // Reset form
-    enquiryForm.reset();
+    // Show loading state
+    const submitBtn = enquiryForm.querySelector('.submit-btn');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    submitBtn.disabled = true;
     
-    // Log enquiry (in production, this would be sent to a server)
-    console.log('New Enquiry:', enquiry);
+    try {
+        // Send email using EmailJS
+        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+            console.log('Email sent successfully!');
+        } else {
+            // Fallback: Log to console and save locally if EmailJS not configured
+            console.log('EmailJS not configured. Enquiry details:', templateParams);
+        }
+        
+        // Store in localStorage as backup
+        saveEnquiry(templateParams);
+        
+        // Show success modal
+        showSuccessModal();
+        
+        // Reset form
+        enquiryForm.reset();
+        
+    } catch (error) {
+        console.error('Failed to send email:', error);
+        showError('Failed to send enquiry. Please try calling us directly.');
+        
+        // Still save locally even if email fails
+        saveEnquiry(templateParams);
+    } finally {
+        // Restore button state
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+    }
 });
 
 // ===== Save Enquiry to LocalStorage =====
 function saveEnquiry(enquiry) {
     let enquiries = JSON.parse(localStorage.getItem('bhartWorldEnquiries')) || [];
-    enquiries.push(enquiry);
+    enquiries.push({
+        ...enquiry,
+        timestamp: new Date().toISOString()
+    });
     localStorage.setItem('bhartWorldEnquiries', JSON.stringify(enquiries));
 }
 
@@ -254,7 +314,7 @@ featureCards.forEach((card, index) => {
     card.style.transitionDelay = `${index * 0.1}s`;
 });
 
-// ===== WhatsApp Integration (Optional) =====
+// ===== WhatsApp Integration =====
 function sendToWhatsApp() {
     const name = document.getElementById('name').value.trim();
     const mobile = document.getElementById('mobile').value.trim();
@@ -277,7 +337,7 @@ function sendToWhatsApp() {
 }
 
 // ===== Console Welcome Message =====
-console.log('%c Bhart World Professional Service Center ', 
+console.log('%c Bharat World Professional Service Center ', 
     'background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; font-size: 16px; padding: 10px 20px; border-radius: 5px;');
 console.log('%c Website developed with care ', 
     'color: #f97316; font-size: 12px;');
