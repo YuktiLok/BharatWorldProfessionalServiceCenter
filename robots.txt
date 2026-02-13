@@ -1,11 +1,11 @@
 # Robots.txt for Bharat World Professional Service Center
-# https://yuktilok.github.io/BharatWorldProfessionalServiceCenter/
+# https://bharatworldprofessionalservicecenter.com/
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yuktilok.github.io/BharatWorldProfessionalServiceCenter/sitemap.xml
+Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
 
 # Crawl-delay (optional, for politeness)
 Crawl-delay: 10
