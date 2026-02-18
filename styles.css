@@ -1563,11 +1563,14 @@ ul {
 
 .pricing-list li span {
     color: #555;
+    flex: 1;
 }
 
 .pricing-list li strong {
     color: #1e40af;
     font-weight: 600;
+    text-align: right;
+    min-width: 120px;
 }
 
 .pricing-btn {
