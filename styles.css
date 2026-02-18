@@ -3,8 +3,10 @@
     --primary: #1e40af;
     --primary-dark: #1e3a8a;
     --primary-light: #3b82f6;
+    --primary-color: #1e40af;
     --secondary: #f97316;
     --secondary-dark: #ea580c;
+    --secondary-color: #f97316;
     --accent: #06b6d4;
     --dark: #0f172a;
     --dark-light: #1e293b;
@@ -12,6 +14,7 @@
     --gray-light: #94a3b8;
     --light: #f1f5f9;
     --white: #ffffff;
+    --text-dark: #1f2937;
     --gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     --gradient-secondary: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
     --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
