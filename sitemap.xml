@@ -1,21 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Homepage -->
     <url>
         <loc>https://bharatworldprofessionalservicecenter.com/</loc>
         <lastmod>2026-02-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/logo.png</image:loc>
+            <image:title>Bharat World Professional Service Center Logo</image:title>
+            <image:caption>Best AC, Washing Machine and Microwave Repair Service in Ranchi</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/First%20Image.png</image:loc>
+            <image:title>Bharat World Professional Service Center Ranchi</image:title>
+            <image:caption>Expert appliance repair and service center in Ranchi, Jharkhand</image:caption>
+        </image:image>
     </url>
+    
+    <!-- Services Section -->
     <url>
         <loc>https://bharatworldprofessionalservicecenter.com/#services</loc>
         <lastmod>2026-02-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/AC%20Installation.png</image:loc>
+            <image:title>AC Installation Service in Ranchi</image:title>
+            <image:caption>Professional split and window AC installation by certified technicians</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/AC%20Repair.png</image:loc>
+            <image:title>AC Repair Service in Ranchi</image:title>
+            <image:caption>Expert AC repair for Voltas, LG, Samsung, Whirlpool, Daikin and all brands</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/AC%20Service.png</image:loc>
+            <image:title>AC Service and Maintenance in Ranchi</image:title>
+            <image:caption>Complete AC servicing including gas refilling, deep cleaning and maintenance</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/WM%20Installation.png</image:loc>
+            <image:title>Washing Machine Installation in Ranchi</image:title>
+            <image:caption>Professional washing machine installation for front load and top load</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/WM%20Repair.png</image:loc>
+            <image:title>Washing Machine Repair in Ranchi</image:title>
+            <image:caption>Expert washing machine repair for LG, Samsung, Whirlpool, IFB and all brands</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/WM%20Service.png</image:loc>
+            <image:title>Washing Machine Service in Ranchi</image:title>
+            <image:caption>Complete washing machine servicing and maintenance</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/MO%20Installation.png</image:loc>
+            <image:title>Microwave Installation in Ranchi</image:title>
+            <image:caption>Professional microwave oven installation service</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/MO%20Repair.png</image:loc>
+            <image:title>Microwave Repair in Ranchi</image:title>
+            <image:caption>Expert microwave repair for LG, Samsung, IFB, Whirlpool and all brands</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://bharatworldprofessionalservicecenter.com/assets/MO%20Service.png</image:loc>
+            <image:title>Microwave Service in Ranchi</image:title>
+            <image:caption>Complete microwave oven servicing and maintenance</image:caption>
+        </image:image>
     </url>
+    
+    <!-- Enquiry/Booking Section -->
     <url>
         <loc>https://bharatworldprofessionalservicecenter.com/#enquiry</loc>
         <lastmod>2026-02-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
+    </url>
+    
+    <!-- Why Choose Us Section -->
+    <url>
+        <loc>https://bharatworldprofessionalservicecenter.com/#why-choose-us</loc>
+        <lastmod>2026-02-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Contact Section -->
+    <url>
+        <loc>https://bharatworldprofessionalservicecenter.com/#contact</loc>
+        <lastmod>2026-02-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
 </urlset>

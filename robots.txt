@@ -4,11 +4,22 @@
 User-agent: *
 Allow: /
 
+# Allow all important pages
+Allow: /index.html
+Allow: /sitemap.xml
+
+# Block unnecessary files
+Disallow: /*.json$
+
 # Sitemap location
 Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
 
-# Crawl-delay (optional, for politeness)
-Crawl-delay: 10
+# Specific crawler instructions
+User-agent: Googlebot
+Allow: /
 
-# Disallow unnecessary files
-Disallow: /assets/*.png$
+User-agent: Googlebot-Image
+Allow: /assets/
+
+User-agent: Bingbot
+Allow: /
