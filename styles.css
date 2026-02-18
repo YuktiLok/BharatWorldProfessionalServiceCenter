@@ -1559,6 +1559,7 @@ ul {
     padding: 12px 0;
     border-bottom: 1px dashed #eee;
     font-size: 0.95rem;
+    gap: 10px;
 }
 
 .pricing-list li:last-child {
@@ -1567,11 +1568,14 @@ ul {
 
 .pricing-list li span {
     color: #555;
+    flex-shrink: 1;
 }
 
 .pricing-list li strong {
     color: #1e40af;
     font-weight: 600;
+    white-space: nowrap;
+    text-align: right;
 }
 
 .pricing-btn {
