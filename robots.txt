@@ -1,25 +1,91 @@
 # Robots.txt for Bharat World Professional Service Center
 # https://bharatworldprofessionalservicecenter.com/
+# Last updated: 2026-02-13
 
+# Default rules for all crawlers
 User-agent: *
 Allow: /
-
-# Allow all important pages
 Allow: /index.html
 Allow: /sitemap.xml
+Allow: /assets/
 
 # Block unnecessary files
+Disallow: /manifest.json
 Disallow: /*.json$
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
 
-# Specific crawler instructions
+# Google specific
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Googlebot-Image
 Allow: /assets/
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
 
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Bing specific
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
+
+User-agent: msnbot
+Allow: /
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 2
+
+# Social Media Crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Host directive
+Host: https://bharatworldprofessionalservicecenter.com
