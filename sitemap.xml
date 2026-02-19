@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
     
-    <!-- Homepage -->
+    <!-- Homepage - Primary Canonical URL -->
     <url>
         <loc>https://bharatworldprofessionalservicecenter.com/</loc>
         <xhtml:link rel="alternate" hreflang="en-IN" href="https://bharatworldprofessionalservicecenter.com/"/>
@@ -22,14 +22,6 @@
             <image:title>Bharat World Professional Service Center Ranchi</image:title>
             <image:caption>Expert appliance repair and service center in Ranchi, Jharkhand</image:caption>
         </image:image>
-    </url>
-    
-    <!-- Services Section -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#services</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
         <image:image>
             <image:loc>https://bharatworldprofessionalservicecenter.com/assets/AC%20Installation.png</image:loc>
             <image:title>AC Installation Service in Ranchi</image:title>
@@ -77,109 +69,12 @@
         </image:image>
     </url>
     
-    <!-- Pricing Section -->
+    <!-- Index.html (alternate URL pointing to same content) -->
     <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#pricing</loc>
+        <loc>https://bharatworldprofessionalservicecenter.com/index.html</loc>
         <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
+        <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
-    
-    <!-- FAQ Section -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#faq</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <!-- Enquiry/Booking Section -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#enquiry</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Why Choose Us Section -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#why-choose-us</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Service-Specific Virtual Pages for SEO -->
-    <!-- AC Repair Ranchi -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-ranchi</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Washing Machine Repair Ranchi -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#washing-machine-repair-ranchi</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Microwave Repair Ranchi -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#microwave-repair-ranchi</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Area-Specific Pages -->
-    <!-- Doranda -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-doranda</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Lalpur -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-lalpur</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Hinoo -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-hinoo</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Kanke -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-kanke</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Harmu -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-harmu</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Bariatu -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/#ac-repair-bariatu</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
+
 </urlset>

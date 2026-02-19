@@ -2,6 +2,9 @@
 # https://bharatworldprofessionalservicecenter.com/
 # Last updated: 2026-02-13
 
+# Sitemap location (Bing recommended)
+Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
+
 # Default rules for all crawlers
 User-agent: *
 Allow: /
@@ -9,43 +12,32 @@ Allow: /index.html
 Allow: /sitemap.xml
 Allow: /assets/
 
-# Block unnecessary files
+# Block unnecessary files from indexing
 Disallow: /manifest.json
-Disallow: /*.json$
 
-# Crawl-delay for polite crawling
-Crawl-delay: 1
+# Bing specific - No crawl delay for faster indexing
+User-agent: Bingbot
+Allow: /
 
-# Sitemap location
-Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
+User-agent: msnbot
+Allow: /
+
+User-agent: msnbot-media
+Allow: /assets/
 
 # Google specific
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
 User-agent: Googlebot-Image
 Allow: /assets/
-Allow: /*.png$
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.webp$
 
 User-agent: Googlebot-Mobile
-Allow: /
-
-# Bing specific
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: msnbot
 Allow: /
 
 # Yahoo
 User-agent: Slurp
 Allow: /
-Crawl-delay: 1
 
 # DuckDuckGo
 User-agent: DuckDuckBot
@@ -54,12 +46,10 @@ Allow: /
 # Yandex
 User-agent: Yandex
 Allow: /
-Crawl-delay: 2
 
 # Baidu
 User-agent: Baiduspider
 Allow: /
-Crawl-delay: 2
 
 # Social Media Crawlers
 User-agent: facebookexternalhit
@@ -74,7 +64,7 @@ Allow: /
 User-agent: WhatsApp
 Allow: /
 
-# Block bad bots
+# Block aggressive SEO bots
 User-agent: AhrefsBot
 Disallow: /
 
