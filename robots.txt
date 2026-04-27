@@ -1,6 +1,6 @@
 # Robots.txt for Bharat World Professional Service Center
 # https://bharatworldprofessionalservicecenter.com/
-# Last updated: 2026-02-13
+# Last updated: 2026-04-27
 
 # Sitemap location (Bing recommended)
 Sitemap: https://bharatworldprofessionalservicecenter.com/sitemap.xml
