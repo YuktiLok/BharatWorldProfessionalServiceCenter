@@ -9,12 +9,18 @@ const EMAILJS_PUBLIC_KEY = 'yqVW82_dX_A0zAsBW'; // Get from EmailJS dashboard
 const EMAILJS_SERVICE_ID = 'service_458dc8j'; // Get from EmailJS dashboard
 const EMAILJS_TEMPLATE_ID = 'template_7ab1dc8'; // Get from EmailJS dashboard
 
-// Initialize EmailJS
-(function() {
+// Initialize EmailJS (SDK v4 requires an options object with publicKey)
+function initEmailJS() {
     if (typeof emailjs !== 'undefined') {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        return true;
     }
-})();
+    return false;
+}
+if (!initEmailJS()) {
+    // SDK is loaded with `defer`; retry after DOM is ready
+    document.addEventListener('DOMContentLoaded', initEmailJS);
+}
 
 // ===== Header Scroll Effect =====
 let lastScroll = 0;
@@ -119,7 +125,7 @@ enquiryForm.addEventListener('submit', async function(e) {
     try {
         // Send email using EmailJS
         if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, { publicKey: EMAILJS_PUBLIC_KEY });
             console.log('Email sent successfully!');
         } else {
             // Fallback: Log to console and save locally if EmailJS not configured
