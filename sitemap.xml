@@ -9,7 +9,7 @@
         <xhtml:link rel="alternate" hreflang="en-IN" href="https://bharatworldprofessionalservicecenter.com/"/>
         <xhtml:link rel="alternate" hreflang="hi-IN" href="https://bharatworldprofessionalservicecenter.com/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://bharatworldprofessionalservicecenter.com/"/>
-        <lastmod>2026-02-13</lastmod>
+        <lastmod>2026-04-27</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         <image:image>
@@ -67,14 +67,6 @@
             <image:title>Microwave Service in Ranchi</image:title>
             <image:caption>Complete microwave oven servicing and maintenance</image:caption>
         </image:image>
-    </url>
-    
-    <!-- Index.html (alternate URL pointing to same content) -->
-    <url>
-        <loc>https://bharatworldprofessionalservicecenter.com/index.html</loc>
-        <lastmod>2026-02-13</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
     </url>
 
 </urlset>
