@@ -1,0 +1,10 @@
+# Local tooling / dependencies (not part of the static site)
+node_modules/
+package.json
+package-lock.json
+optimize-images.mjs
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

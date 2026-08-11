@@ -3,11 +3,31 @@ const enquiryForm = document.getElementById('enquiryForm');
 const successModal = document.getElementById('successModal');
 const header = document.querySelector('.header');
 
-// ===== EmailJS Configuration =====
-// IMPORTANT: Replace these with your actual EmailJS credentials
-const EMAILJS_PUBLIC_KEY = 'yqVW82_dX_A0zAsBW'; // Get from EmailJS dashboard
-const EMAILJS_SERVICE_ID = 'service_458dc8j'; // Get from EmailJS dashboard
-const EMAILJS_TEMPLATE_ID = 'template_7ab1dc8'; // Get from EmailJS dashboard
+// ===== EmailJS Configuration (public key only — restrict domains in EmailJS dashboard) =====
+const EMAILJS_PUBLIC_KEY = 'yqVW82_dX_A0zAsBW';
+const EMAILJS_SERVICE_ID = 'service_458dc8j';
+const EMAILJS_TEMPLATE_ID = 'template_7ab1dc8';
+
+const ALLOWED_SERVICES = {
+    service: 'Service',
+    repair: 'Repair',
+    installation: 'Installation'
+};
+
+const ALLOWED_APPLIANCES = {
+    'air-conditioner': 'Air Conditioner',
+    'washing-machine': 'Washing Machine',
+    fridge: 'Fridge',
+    geyser: 'Geyser',
+    tv: 'TV',
+    microwave: 'Microwave Oven'
+};
+
+const RATE_LIMIT_KEY = 'bharatWorldEnquiryRate';
+const RATE_LIMIT_MS = 60 * 1000; // 1 submission per minute per browser
+const ENQUIRIES_STORAGE_KEY = 'bharatWorldEnquiries';
+const LEGACY_ENQUIRIES_STORAGE_KEY = 'bhartWorldEnquiries';
+const MAX_STORED_ENQUIRIES = 20;
 
 // Initialize EmailJS (SDK v4 requires an options object with publicKey)
 function initEmailJS() {
@@ -22,9 +42,32 @@ if (!initEmailJS()) {
     document.addEventListener('DOMContentLoaded', initEmailJS);
 }
 
-// ===== Header Scroll Effect =====
-let lastScroll = 0;
+function sanitizeText(value, maxLength) {
+    return String(value || '')
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, maxLength);
+}
 
+function isRateLimited() {
+    try {
+        const last = Number(sessionStorage.getItem(RATE_LIMIT_KEY) || 0);
+        return last && Date.now() - last < RATE_LIMIT_MS;
+    } catch (_) {
+        return false;
+    }
+}
+
+function markRateLimited() {
+    try {
+        sessionStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+    } catch (_) {
+        // Ignore storage failures
+    }
+}
+
+// ===== Header Scroll Effect =====
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
@@ -35,78 +78,80 @@ window.addEventListener('scroll', () => {
         header.style.background = 'rgba(15, 23, 42, 0.9)';
         header.style.boxShadow = 'none';
     }
-    
-    lastScroll = currentScroll;
-});
+}, { passive: true });
 
 // ===== Smooth Scroll for Anchor Links =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const headerHeight = header.offsetHeight;
-            const targetPosition = target.offsetTop - headerHeight - 20;
-            
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
-            });
+        const href = this.getAttribute('href');
+        if (!href || href === '#' || !/^#[A-Za-z][\w:-]*$/.test(href)) {
+            return;
         }
+
+        const target = document.getElementById(href.slice(1));
+        if (!target) return;
+
+        e.preventDefault();
+        const headerHeight = header.offsetHeight;
+        const targetPosition = target.offsetTop - headerHeight - 20;
+        
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
     });
 });
 
 // ===== Form Validation & Submission =====
-enquiryForm.addEventListener('submit', async function(e) {
+if (!enquiryForm) {
+    console.warn('Enquiry form not found');
+} else enquiryForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    
-    // Get form values
-    const name = document.getElementById('name').value.trim();
-    const mobile = document.getElementById('mobile').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const serviceType = document.getElementById('serviceType').value;
-    const appliance = document.getElementById('appliance').value;
-    const message = document.getElementById('message').value.trim();
-    
-    // Validate required fields
-    if (!name || !mobile || !serviceType || !appliance) {
-        showError('Please fill in all required fields');
+
+    // Honeypot: bots usually fill hidden fields
+    const honeypot = document.getElementById('company_website');
+    if (honeypot && honeypot.value.trim() !== '') {
+        return;
+    }
+
+    if (isRateLimited()) {
+        showError('Please wait a minute before sending another enquiry.');
         return;
     }
     
-    // Validate mobile number
-    if (!/^[0-9]{10}$/.test(mobile)) {
+    const name = sanitizeText(document.getElementById('name').value, 80);
+    const mobile = sanitizeText(document.getElementById('mobile').value, 10).replace(/\D/g, '');
+    const email = sanitizeText(document.getElementById('email').value, 120);
+    const serviceType = document.getElementById('serviceType').value;
+    const appliance = document.getElementById('appliance').value;
+    const message = sanitizeText(document.getElementById('message').value, 800);
+    
+    if (!name || name.length < 2 || !mobile || !serviceType || !appliance) {
+        showError('Please fill in all required fields');
+        return;
+    }
+
+    if (!ALLOWED_SERVICES[serviceType] || !ALLOWED_APPLIANCES[appliance]) {
+        showError('Please select a valid service and appliance');
+        return;
+    }
+    
+    if (!/^[6-9][0-9]{9}$/.test(mobile)) {
         showError('Please enter a valid 10-digit mobile number');
         return;
     }
     
-    // Validate email if provided
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
         showError('Please enter a valid email address');
         return;
     }
     
-    // Get appliance display name
-    const applianceNames = {
-        'air-conditioner': 'Air Conditioner',
-        'washing-machine': 'Washing Machine',
-        'microwave': 'Microwave Oven'
-    };
-    
-    // Get service type display name
-    const serviceNames = {
-        'service': 'Service',
-        'repair': 'Repair',
-        'installation': 'Installation'
-    };
-    
-    // Create enquiry object for email
     const templateParams = {
         from_name: name,
         from_mobile: mobile,
         from_email: email || 'Not provided',
-        service_type: serviceNames[serviceType] || serviceType,
-        appliance_type: applianceNames[appliance] || appliance,
+        service_type: ALLOWED_SERVICES[serviceType],
+        appliance_type: ALLOWED_APPLIANCES[appliance],
         message: message || 'No additional details provided',
         to_email: 'bharatworldprofessionalservice@gmail.com',
         submission_date: new Date().toLocaleString('en-IN', { 
@@ -116,65 +161,101 @@ enquiryForm.addEventListener('submit', async function(e) {
         })
     };
     
-    // Show loading state
     const submitBtn = enquiryForm.querySelector('.submit-btn');
     const originalBtnText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    submitBtn.replaceChildren();
+    const spinner = document.createElement('i');
+    spinner.className = 'fas fa-spinner fa-spin';
+    spinner.setAttribute('aria-hidden', 'true');
+    submitBtn.append(spinner, document.createTextNode(' Sending...'));
     submitBtn.disabled = true;
     
     try {
-        // Send email using EmailJS
-        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, { publicKey: EMAILJS_PUBLIC_KEY });
-            console.log('Email sent successfully!');
-        } else {
-            // Fallback: Log to console and save locally if EmailJS not configured
-            console.log('EmailJS not configured. Enquiry details:', templateParams);
+        if (typeof emailjs === 'undefined') {
+            throw new Error('Email service unavailable');
         }
-        
-        // Store in localStorage as backup
+
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, {
+            publicKey: EMAILJS_PUBLIC_KEY
+        });
+        markRateLimited();
         saveEnquiry(templateParams);
-        
-        // Show success modal
         showSuccessModal();
-        
-        // Reset form
         enquiryForm.reset();
-        
     } catch (error) {
-        console.error('Failed to send email:', error);
         showError('Failed to send enquiry. Please try calling us directly.');
-        
-        // Still save locally even if email fails
         saveEnquiry(templateParams);
     } finally {
-        // Restore button state
         submitBtn.innerHTML = originalBtnText;
         submitBtn.disabled = false;
     }
 });
 
-// ===== Save Enquiry to LocalStorage =====
-function saveEnquiry(enquiry) {
-    let enquiries = JSON.parse(localStorage.getItem('bhartWorldEnquiries')) || [];
-    enquiries.push({
-        ...enquiry,
-        timestamp: new Date().toISOString()
-    });
-    localStorage.setItem('bhartWorldEnquiries', JSON.stringify(enquiries));
+// ===== Save Enquiry to LocalStorage (local browser backup only) =====
+function safeParseJson(value, fallback) {
+    try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : fallback;
+    } catch (_) {
+        return fallback;
+    }
 }
 
-// ===== Show Error Message =====
+function getStoredEnquiries() {
+    try {
+        const current = localStorage.getItem(ENQUIRIES_STORAGE_KEY);
+        if (current) {
+            return safeParseJson(current, []);
+        }
+
+        const legacy = localStorage.getItem(LEGACY_ENQUIRIES_STORAGE_KEY);
+        if (legacy) {
+            const migrated = safeParseJson(legacy, []);
+            localStorage.setItem(ENQUIRIES_STORAGE_KEY, JSON.stringify(migrated));
+            localStorage.removeItem(LEGACY_ENQUIRIES_STORAGE_KEY);
+            return migrated;
+        }
+    } catch (_) {
+        // Private mode / blocked storage
+    }
+
+    return [];
+}
+
+function saveEnquiry(enquiry) {
+    try {
+        const enquiries = getStoredEnquiries();
+        enquiries.push({
+            from_name: enquiry.from_name,
+            from_mobile: enquiry.from_mobile,
+            service_type: enquiry.service_type,
+            appliance_type: enquiry.appliance_type,
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem(
+            ENQUIRIES_STORAGE_KEY,
+            JSON.stringify(enquiries.slice(-MAX_STORED_ENQUIRIES))
+        );
+    } catch (_) {
+        // Ignore storage failures
+    }
+}
+
+// ===== Show Error Message (XSS-safe) =====
 function showError(message) {
-    // Create error toast
     const toast = document.createElement('div');
     toast.className = 'error-toast';
-    toast.innerHTML = `
-        <i class="fas fa-exclamation-circle"></i>
-        <span>${message}</span>
-    `;
+    toast.setAttribute('role', 'alert');
+
+    const icon = document.createElement('i');
+    icon.className = 'fas fa-exclamation-circle';
+    icon.setAttribute('aria-hidden', 'true');
+
+    const text = document.createElement('span');
+    text.textContent = String(message || 'Something went wrong');
+
+    toast.append(icon, text);
     
-    // Add styles
     toast.style.cssText = `
         position: fixed;
         top: 100px;
@@ -194,7 +275,6 @@ function showError(message) {
     
     document.body.appendChild(toast);
     
-    // Remove after 3 seconds
     setTimeout(() => {
         toast.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => toast.remove(), 300);
@@ -203,29 +283,32 @@ function showError(message) {
 
 // ===== Show Success Modal =====
 function showSuccessModal() {
+    if (!successModal) return;
     successModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 // ===== Close Modal =====
 function closeModal() {
+    if (!successModal) return;
     successModal.classList.remove('active');
     document.body.style.overflow = '';
 }
 
-// Close modal on outside click
-successModal.addEventListener('click', function(e) {
-    if (e.target === successModal) {
-        closeModal();
-    }
-});
+// Close modal on outside click / Escape
+if (successModal) {
+    successModal.addEventListener('click', function(e) {
+        if (e.target === successModal) {
+            closeModal();
+        }
+    });
 
-// Close modal on Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && successModal.classList.contains('active')) {
-        closeModal();
-    }
-});
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && successModal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
 
 // ===== Input Animations =====
 const formInputs = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
@@ -242,9 +325,11 @@ formInputs.forEach(input => {
 
 // ===== Mobile Number Input - Only Numbers =====
 const mobileInput = document.getElementById('mobile');
-mobileInput.addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-});
+if (mobileInput) {
+    mobileInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+}
 
 // ===== Intersection Observer for Animations =====
 const observerOptions = {
@@ -261,13 +346,17 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Observe elements for animation
-document.querySelectorAll('.service-card, .feature-card, .enquiry-wrapper').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
+if (!prefersReducedMotion) {
+    document.querySelectorAll('.service-card, .feature-card, .enquiry-wrapper, .pricing-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+}
 
 // Add animation class styles
 const style = document.createElement('style');
@@ -339,8 +428,123 @@ function sendToWhatsApp() {
     `.trim();
     
     const whatsappUrl = `https://wa.me/919798092738?text=${encodeURIComponent(whatsappMessage)}`;
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 }
+
+// ===== Google Reviews Carousel =====
+(function initGoogleReviewsCarousel() {
+    const track = document.getElementById('reviewsTrack');
+    const dotsWrap = document.getElementById('reviewsDots');
+    const prevBtn = document.querySelector('.reviews-nav--prev');
+    const nextBtn = document.querySelector('.reviews-nav--next');
+    const carousel = document.querySelector('.reviews-carousel');
+
+    if (!track || !dotsWrap) return;
+
+    const cards = Array.from(track.querySelectorAll('.review-card'));
+    if (!cards.length) return;
+
+    let index = 0;
+    let timer = null;
+    let touchStartX = 0;
+
+    cards.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'reviews-dot' + (i === 0 ? ' is-active' : '');
+        dot.setAttribute('aria-label', `Go to review ${i + 1}`);
+        dot.addEventListener('click', () => {
+            goTo(i);
+            restart();
+        });
+        dotsWrap.appendChild(dot);
+    });
+
+    const dots = Array.from(dotsWrap.querySelectorAll('.reviews-dot'));
+
+    function goTo(i) {
+        index = (i + cards.length) % cards.length;
+        track.style.transform = `translateX(-${index * 100}%)`;
+        cards.forEach((card, cardIndex) => {
+            card.classList.toggle('is-active', cardIndex === index);
+        });
+        dots.forEach((dot, dotIndex) => {
+            dot.classList.toggle('is-active', dotIndex === index);
+        });
+    }
+
+    function next() {
+        goTo(index + 1);
+    }
+
+    function prev() {
+        goTo(index - 1);
+    }
+
+    function start() {
+        stop();
+        if (prefersReducedMotion) return;
+        timer = setInterval(next, 4500);
+    }
+
+    function stop() {
+        if (timer) clearInterval(timer);
+        timer = null;
+    }
+
+    function restart() {
+        stop();
+        start();
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prev();
+            restart();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            next();
+            restart();
+        });
+    }
+
+    if (carousel) {
+        carousel.addEventListener('mouseenter', stop);
+        carousel.addEventListener('mouseleave', start);
+        carousel.addEventListener('focusin', stop);
+        carousel.addEventListener('focusout', start);
+
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stop();
+        }, { passive: true });
+
+        carousel.addEventListener('touchend', (e) => {
+            const delta = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(delta) > 40) {
+                if (delta < 0) next();
+                else prev();
+            }
+            start();
+        }, { passive: true });
+
+        if ('IntersectionObserver' in window) {
+            const watcher = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) start();
+                    else stop();
+                });
+            }, { threshold: 0.25 });
+            watcher.observe(carousel);
+        }
+    }
+
+    goTo(0);
+    start();
+})();
 
 // ===== Console Welcome Message =====
 console.log('%c Bharat World Professional Service Center ', 
@@ -391,21 +595,62 @@ function stopCarousel() {
 
 // Initialize carousel
 if (carouselSlides.length > 0) {
-    startCarousel();
-    
+    const carousel = document.querySelector('.hero-carousel');
+    const prevBtn = document.querySelector('.carousel-nav--prev');
+    const nextBtn = document.querySelector('.carousel-nav--next');
+
+    const restartCarousel = () => {
+        stopCarousel();
+        if (!prefersReducedMotion) startCarousel();
+    };
+
+    if (!prefersReducedMotion) startCarousel();
+
     // Click on indicators
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
-            stopCarousel();
             showSlide(index);
-            startCarousel();
+            restartCarousel();
         });
     });
-    
-    // Pause on hover
-    const carousel = document.querySelector('.hero-carousel');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            restartCarousel();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            restartCarousel();
+        });
+    }
+
+    // Pause on hover / touch
     if (carousel) {
         carousel.addEventListener('mouseenter', stopCarousel);
-        carousel.addEventListener('mouseleave', startCarousel);
+        carousel.addEventListener('mouseleave', () => {
+            if (!prefersReducedMotion) startCarousel();
+        });
+        carousel.addEventListener('focusin', stopCarousel);
+        carousel.addEventListener('focusout', () => {
+            if (!prefersReducedMotion) startCarousel();
+        });
+    }
+
+    // Pause when carousel is off-screen (saves battery/CPU)
+    if ('IntersectionObserver' in window && carousel) {
+        const carouselWatcher = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (!prefersReducedMotion) startCarousel();
+                } else {
+                    stopCarousel();
+                }
+            });
+        }, { threshold: 0.2 });
+        carouselWatcher.observe(carousel);
     }
 }

@@ -9,14 +9,14 @@
     "orientation": "portrait-primary",
     "icons": [
         {
-            "src": "assets/logo.png",
-            "sizes": "192x192",
+            "src": "assets/logo-sm.png",
+            "sizes": "140x140",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "assets/logo.png",
-            "sizes": "512x512",
+            "sizes": "320x320",
             "type": "image/png",
             "purpose": "any maskable"
         }
